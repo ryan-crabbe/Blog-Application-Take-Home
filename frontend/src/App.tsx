@@ -1,5 +1,4 @@
 import "./App.css";
-import { BlogList } from "./components/BlogList";
 import { Header } from "./components/Header";
 import { TopBlogs } from "./components/TopBlogs";
 

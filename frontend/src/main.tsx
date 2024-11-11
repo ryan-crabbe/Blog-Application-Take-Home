@@ -4,6 +4,7 @@ import "./index.css";
 import App from "./App.tsx";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import Blogs from "./pages/blogs.tsx";
+import CreateBlogPost from "./pages/CreateBlogPost.tsx";
 
 const router = createBrowserRouter([
   {
@@ -13,6 +14,10 @@ const router = createBrowserRouter([
   {
     path: "/blogs",
     element: <Blogs />,
+  },
+  {
+    path: "/create",
+    element: <CreateBlogPost />,
   },
 ]);
 

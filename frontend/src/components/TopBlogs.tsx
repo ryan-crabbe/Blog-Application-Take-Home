@@ -16,7 +16,7 @@ export function TopBlogs() {
   useEffect(() => {
     const fetchTopBlogs = async () => {
       try {
-        const response = await fetchBlogs(1, 5);
+        const response = await fetchBlogs(1, 6);
         setBlogs(response.blog_posts);
       } catch (error) {
         console.error("Error fetching top blogs:", error);
@@ -38,7 +38,7 @@ export function TopBlogs() {
         Popular Posts
       </h2>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {blogs.map((blog) => (
           <Card key={blog.id} className="hover:shadow-lg transition-shadow">
             <CardHeader>

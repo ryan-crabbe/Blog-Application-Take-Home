@@ -8,7 +8,7 @@ class BlogModel extends Model
 {
     protected $table = 'blog_posts';
     protected $primaryKey = 'id';
-    protected $allowedFields = ['title', 'description', 'category', 'created_at', 'image'];
+    protected $allowedFields = ['title', 'description', 'content', 'category', 'created_at', 'image'];
     
     public function getTopBlogs($page = 1, $limit = 10) 
     {

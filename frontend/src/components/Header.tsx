@@ -9,11 +9,18 @@ export function Header() {
           Blog Project
         </Link>
       </Button>
-      <Button variant="ghost" className="text-sm text-black" asChild>
-        <Link to="/blogs" className="text-sm text-black">
-          All Blog Posts
-        </Link>
-      </Button>
+      <div className="flex gap-4">
+        <Button variant="ghost" className="text-sm text-black" asChild>
+          <Link to="/blogs" className="text-sm text-black">
+            All Blog Posts
+          </Link>
+        </Button>
+        <Button variant="ghost" className="text-sm text-black" asChild>
+          <Link to="/create" className="text-sm text-black">
+            Create Blog Post
+          </Link>
+        </Button>
+      </div>
     </header>
   );
 }
