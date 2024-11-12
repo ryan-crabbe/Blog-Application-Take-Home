@@ -61,7 +61,6 @@ export default function CreateBlogForm() {
           headers: {
             "Content-Type": "multipart/form-data",
           },
-          validateStatus: (status) => true,
         }
       );
 
