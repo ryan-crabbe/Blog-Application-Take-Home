@@ -17,13 +17,22 @@ class BlogController extends BaseController
     
     public function index()
     {
-        $page = $this->request->getGet('page') ?? 1;
-        $limit = $this->request->getGet('limit') ?? 10;
-        
-        $data['blog_posts'] = $this->blogModel->getTopBlogs($page, $limit);
-        $data['pager'] = $this->blogModel->pager;
-        
-        return $this->response->setJSON($data);
+        try {
+            $page = (int)($this->request->getGet('page') ?? 1);
+            $limit = (int)($this->request->getGet('limit') ?? 10);
+            
+            $data = $this->blogModel->getTopBlogs($page, $limit);
+            
+            return $this->response->setJSON($data);
+        } catch (\Exception $e) {
+            log_message('error', 'Error in BlogController::index: ' . $e->getMessage());
+            
+            return $this->response->setStatusCode(500)
+                ->setJSON([
+                    'error' => 'Internal Server Error',
+                    'message' => ENVIRONMENT === 'development' ? $e->getMessage() : 'An error occurred'
+                ]);
+        }
     }
     
     public function create()

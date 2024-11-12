@@ -14,12 +14,9 @@ export function BlogList() {
         setLoading(true);
         const response = await fetchBlogs(currentPage);
         setBlogs(response.blog_posts);
-        console.log("API Response:", response);
 
-        if (response.pager && response.pager.total_pages) {
+        if (response.pager) {
           setTotalPages(response.pager.total_pages);
-        } else {
-          setTotalPages(response.blog_posts.length > 0 ? 1 : 0);
         }
         setError(null);
       } catch (err) {

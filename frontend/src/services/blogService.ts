@@ -14,6 +14,7 @@ export interface BlogResponse {
     pager: {
         current_page: number;
         total_pages: number;
+        total_posts: number;
     };
 }
 
