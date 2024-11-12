@@ -52,15 +52,29 @@ export function BlogList() {
               key={blog.id}
               className="bg-white rounded-lg overflow-hidden shadow-lg hover:shadow-xl transition-shadow"
             >
-              <div className="p-4">
-                <h2 className="text-xl font-bold mb-2">{blog.title}</h2>
-                <p className="text-gray-600 mb-2">{blog.description}</p>
-                <div className="flex justify-between items-center mt-4">
-                  <span className="text-sm text-gray-500">{blog.category}</span>
-                  <time className="text-sm text-gray-500">
-                    {format(new Date(blog.created_at), "MMM d, yyyy")}
-                  </time>
+              <div className="flex p-4">
+                <div className="flex-1 pr-4">
+                  <h2 className="text-xl font-bold mb-2">{blog.title}</h2>
+                  <p className="text-gray-600 mb-2">{blog.description}</p>
+                  <div className="flex flex-coljustify-between items-center mt-4">
+                    <span className="text-sm text-gray-500">
+                      {blog.category}
+                    </span>
+                    <time className="text-sm text-gray-500">
+                      {format(new Date(blog.created_at), "MMM d, yyyy")}
+                    </time>
+                  </div>
                 </div>
+
+                {blog.image && (
+                  <div className="w-[100px] h-[100px]">
+                    <img
+                      src={`http://localhost:8080/uploads/${blog.image}`}
+                      alt={blog.title}
+                      className="w-full h-full object-cover rounded-lg"
+                    />
+                  </div>
+                )}
               </div>
             </article>
           ))}

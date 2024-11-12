@@ -3,7 +3,7 @@ import CreateBlogForm from "@/components/CreateBlogForm";
 
 export default function CreateBlogPost() {
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col bg-white">
       <Header />
       <CreateBlogForm />
     </div>

@@ -21,6 +21,18 @@ const formSchema = z.object({
   content: z.string().min(10, {
     message: "Content must be at least 10 characters.",
   }),
+  image: z
+    .instanceof(FileList)
+    .optional()
+    .refine(
+      (files) => {
+        if (!files) return true;
+        return files[0]?.size <= 5000000; // 5MB limit
+      },
+      {
+        message: "Image must be less than 5MB",
+      }
+    ),
 });
 
 export default function CreateBlogForm() {
@@ -32,17 +44,38 @@ export default function CreateBlogForm() {
     },
   });
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    axios
-      .post("http://localhost:8080/blogs", values)
-      .then((res) => {
-        console.log(res);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+  async function onSubmit(values: z.infer<typeof formSchema>) {
+    const formData = new FormData();
+    formData.append("title", values.title);
+    formData.append("content", values.content);
 
-    form.reset();
+    if (values.image && values.image.length > 0) {
+      formData.append("image", values.image[0]);
+    }
+
+    try {
+      const response = await axios.post(
+        "http://localhost:8080/blogs",
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+          validateStatus: (status) => true,
+        }
+      );
+
+      console.log("Full response:", response);
+
+      if (response.status === 200) {
+        console.log("Blog created:", response.data);
+        form.reset();
+      } else {
+        console.error("Server error:", response.data);
+      }
+    } catch (err) {
+      console.error("Error details:", err);
+    }
   }
 
   return (
@@ -74,6 +107,24 @@ export default function CreateBlogForm() {
                     <Textarea
                       placeholder="Write your blog content here..."
                       className="min-h-[200px]"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="image"
+              render={({ field: { onChange, value, ...field } }) => (
+                <FormItem>
+                  <FormLabel>Image</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="file"
+                      accept="image/*"
+                      onChange={(e) => onChange(e.target.files)}
                       {...field}
                     />
                   </FormControl>
