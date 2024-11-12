@@ -41,6 +41,15 @@ export function TopBlogs() {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {blogs.map((blog) => (
           <Card key={blog.id} className="hover:shadow-lg transition-shadow">
+            {blog.image && (
+              <div className="w-full h-[200px] relative">
+                <img
+                  src={`http://localhost:8080/uploads/${blog.image}`}
+                  alt={blog.title}
+                  className="w-full h-full object-cover"
+                />
+              </div>
+            )}
             <CardHeader>
               <CardTitle>{blog.title}</CardTitle>
             </CardHeader>
