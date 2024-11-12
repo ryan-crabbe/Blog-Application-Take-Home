@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { fetchBlogs, type BlogPost } from "../services/blogService";
+import { format } from "date-fns";
 
 export function BlogList() {
   const [blogs, setBlogs] = useState<BlogPost[]>([]);
@@ -40,7 +41,7 @@ export function BlogList() {
 
   return (
     <div className="min-h-screen bg-white">
-      <div className="max-w-2xl mx-auto px-4">
+      <div className="max-w-2xl mx-auto px-4 pb-16">
         <header className="py-16">
           <h1 className="text-4xl font-bold text-center">All Blog Posts</h1>
         </header>
@@ -51,10 +52,15 @@ export function BlogList() {
               key={blog.id}
               className="bg-white rounded-lg overflow-hidden shadow-lg hover:shadow-xl transition-shadow"
             >
-              <div className="p-6 w-2/3">
-                <h2 className="text-2xl font-bold mb-2">{blog.title}</h2>
-                <p className="text-gray-600 mb-4">{blog.description}</p>
-                <span className="text-sm text-gray-500">{blog.category}</span>
+              <div className="p-4">
+                <h2 className="text-xl font-bold mb-2">{blog.title}</h2>
+                <p className="text-gray-600 mb-2">{blog.description}</p>
+                <div className="flex justify-between items-center mt-4">
+                  <span className="text-sm text-gray-500">{blog.category}</span>
+                  <time className="text-sm text-gray-500">
+                    {format(new Date(blog.created_at), "MMM d, yyyy")}
+                  </time>
+                </div>
               </div>
             </article>
           ))}
