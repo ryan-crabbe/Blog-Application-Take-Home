@@ -54,7 +54,9 @@ export function BlogList() {
               <article className="bg-white rounded-lg overflow-hidden shadow-lg hover:shadow-xl transition-shadow">
                 <div className="flex p-4">
                   <div className="flex-1 pr-4">
-                    <h2 className="text-xl font-bold mb-2">{blog.title}</h2>
+                    <h2 className="text-xl text-black font-bold mb-2">
+                      {blog.title}
+                    </h2>
                     <p className="text-gray-600 mb-2">{blog.description}</p>
                     <div className="flex flex-wrap gap-2 mt-4">
                       {blog.tags?.map((tag, index) => (
