@@ -56,8 +56,13 @@ export function TopBlogs() {
             <CardContent>
               <p className="text-muted-foreground">{blog.description}</p>
             </CardContent>
-            <CardFooter>
+            <CardFooter className="flex flex-wrap gap-2">
               <Badge variant="secondary">{blog.category}</Badge>
+              {blog.tags?.map((tag, index) => (
+                <Badge key={index} variant="outline">
+                  {tag}
+                </Badge>
+              ))}
             </CardFooter>
           </Card>
         ))}

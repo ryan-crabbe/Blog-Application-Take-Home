@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { fetchBlogs, type BlogPost } from "../services/blogService";
 import { format } from "date-fns";
+import { Badge } from "@/components/ui/badge";
 
 export function BlogList() {
   const [blogs, setBlogs] = useState<BlogPost[]>([]);
@@ -56,11 +57,16 @@ export function BlogList() {
                 <div className="flex-1 pr-4">
                   <h2 className="text-xl font-bold mb-2">{blog.title}</h2>
                   <p className="text-gray-600 mb-2">{blog.description}</p>
-                  <div className="flex flex-coljustify-between items-center mt-4">
+                  <div className="flex flex-wrap gap-2 mt-4">
                     <span className="text-sm text-gray-500">
                       {blog.category}
                     </span>
-                    <time className="text-sm text-gray-500">
+                    {blog.tags?.map((tag, index) => (
+                      <Badge key={index} variant="outline" className="text-sm">
+                        {tag}
+                      </Badge>
+                    ))}
+                    <time className="text-sm text-gray-500 ml-auto">
                       {format(new Date(blog.created_at), "MMM d, yyyy")}
                     </time>
                   </div>

@@ -7,6 +7,7 @@ export interface BlogPost {
     category: string;
     created_at: string;
     image: string;
+    tags: string[];
 }
 
 export interface BlogResponse {

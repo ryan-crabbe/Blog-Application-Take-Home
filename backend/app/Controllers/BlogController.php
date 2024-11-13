@@ -2,17 +2,26 @@
 
 namespace App\Controllers;
 
-class BlogController extends BaseController
+use CodeIgniter\RESTful\ResourceController;
+use CodeIgniter\API\ResponseTrait;
+
+class BlogController extends ResourceController
 {
+    use ResponseTrait;
+    
     protected $blogModel;
+    protected $tagModel;
+    protected $db;
     
     public function __construct()
     {
         $this->blogModel = new \App\Models\BlogModel();
-        header('Access-Control-Allow-Origin: http://localhost:5173');
-        header('Access-Control-Allow-Methods: GET, POST, OPTIONS, PUT, DELETE');
-        header('Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With');
-        header('Access-Control-Allow-Credentials: true');
+        $this->tagModel = new \App\Models\TagModel();
+        $this->db = \Config\Database::connect();
+        
+        header('Access-Control-Allow-Origin: *');
+        header("Access-Control-Allow-Headers: X-API-KEY, Origin, X-Requested-With, Content-Type, Accept, Access-Control-Request-Method, Authorization");
+        header("Access-Control-Allow-Methods: GET, POST, OPTIONS, PUT, DELETE");
     }
     
     public function index()
@@ -21,28 +30,32 @@ class BlogController extends BaseController
             $page = (int)($this->request->getGet('page') ?? 1);
             $limit = (int)($this->request->getGet('limit') ?? 10);
             
-            $data = $this->blogModel->getTopBlogs($page, $limit);
+            // Get blogs with pagination
+            $blogs = $this->blogModel->getTopBlogs($page, $limit);
             
-            return $this->response->setJSON($data);
+            // Add tags for each blog post
+            foreach ($blogs['blog_posts'] as &$blog) {
+                $tags = $this->blogModel->getTagsForBlog($blog['id']);
+                $blog['tags'] = array_column($tags, 'name');
+            }
+            
+            return $this->response->setJSON($blogs);
+            
         } catch (\Exception $e) {
-            log_message('error', 'Error in BlogController::index: ' . $e->getMessage());
+            log_message('error', 'Error fetching blogs: ' . $e->getMessage());
             
-            return $this->response->setStatusCode(500)
-                ->setJSON([
-                    'error' => 'Internal Server Error',
-                    'message' => ENVIRONMENT === 'development' ? $e->getMessage() : 'An error occurred'
-                ]);
+            return $this->response->setStatusCode(500)->setJSON([
+                'message' => 'Error fetching blogs',
+                'error' => ENVIRONMENT === 'development' ? $e->getMessage() : 'Internal server error'
+            ]);
         }
     }
     
     public function create()
     {
         try {
-            // Log incoming request data
-            log_message('debug', 'Received blog creation request: ' . json_encode([
-                'post' => $this->request->getPost(),
-                'files' => $this->request->getFiles(),
-            ]));
+            // Start a database transaction
+            $this->db->transStart();
             
             $jsonData = [
                 'title' => $this->request->getPost('title'),
@@ -95,8 +108,41 @@ class BlogController extends BaseController
             // Add timestamp
             $jsonData['created_at'] = date('Y-m-d H:i:s');
             
-            // Insert into database
+            // Insert blog post
             $this->blogModel->insert($jsonData);
+            $blogId = $this->blogModel->insertID();
+            
+            // Debug log
+            log_message('debug', 'Blog post created with ID: ' . $blogId);
+            
+            // Handle tags
+            $tags = json_decode($this->request->getPost('tags'), true) ?? [];
+            if (!empty($tags)) {
+                // Debug log
+                log_message('debug', 'Processing tags: ' . json_encode($tags));
+                
+                $tagIds = $this->tagModel->getOrCreateTags($tags);
+                
+                // Debug log
+                log_message('debug', 'Created tag IDs: ' . json_encode($tagIds));
+                
+                if (!empty($tagIds)) {
+                    $this->blogModel->attachTags($blogId, $tagIds);
+                }
+            }
+            
+            // Complete the transaction
+            $this->db->transComplete();
+            
+            if ($this->db->transStatus() === false) {
+                // Debug log
+                log_message('error', 'Transaction failed');
+                throw new \RuntimeException('Failed to create blog post with tags');
+            }
+            
+            // Get the tags for response
+            $blogTags = $this->blogModel->getTagsForBlog($blogId);
+            $jsonData['tags'] = array_column($blogTags, 'name');
             
             return $this->response->setJSON([
                 'message' => 'Blog created successfully',

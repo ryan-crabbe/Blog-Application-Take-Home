@@ -61,5 +61,26 @@ class BlogModel extends Model
             ];
         }
     }
+
+    public function attachTags(int $postId, array $tagIds)
+    {
+        $builder = $this->db->table('post_tags');
+        foreach ($tagIds as $tagId) {
+            $builder->insert([
+                'post_id' => $postId,
+                'tag_id' => $tagId
+            ]);
+        }
+    }
+
+    public function getTagsForBlog(int $postId): array
+    {
+        return $this->db->table('tags')
+            ->select('tags.name')
+            ->join('post_tags', 'post_tags.tag_id = tags.id')
+            ->where('post_tags.post_id', $postId)
+            ->get()
+            ->getResultArray();
+    }
 }
 ?>

@@ -13,6 +13,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import axios from "axios";
+import { TagInput } from "./TagInput";
 
 const formSchema = z.object({
   title: z.string().min(2, {
@@ -21,6 +22,7 @@ const formSchema = z.object({
   content: z.string().min(10, {
     message: "Content must be at least 10 characters.",
   }),
+  tags: z.array(z.string()).default([]),
   image: z
     .instanceof(FileList)
     .optional()
@@ -41,6 +43,7 @@ export default function CreateBlogForm() {
     defaultValues: {
       title: "",
       content: "",
+      tags: [],
     },
   });
 
@@ -48,6 +51,7 @@ export default function CreateBlogForm() {
     const formData = new FormData();
     formData.append("title", values.title);
     formData.append("content", values.content);
+    formData.append("tags", JSON.stringify(values.tags));
 
     if (values.image && values.image.length > 0) {
       formData.append("image", values.image[0]);
@@ -131,6 +135,25 @@ export default function CreateBlogForm() {
                 </FormItem>
               )}
             />
+
+            <FormField
+              control={form.control}
+              name="tags"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Tags</FormLabel>
+                  <FormControl>
+                    <TagInput
+                      value={field.value}
+                      onChange={field.onChange}
+                      placeholder="Enter tags (press Enter or comma to add)"
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
             <Button type="submit">Create Post</Button>
           </form>
         </Form>
