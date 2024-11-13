@@ -8,6 +8,7 @@ use CodeIgniter\Router\RouteCollection;
 $routes->options('(:any)', '', ['filter' => 'cors']);
 $routes->get('blogs', 'BlogController::index');
 $routes->post('blogs', 'BlogController::create');
+$routes->get('blogs/(:num)', 'BlogController::show/$1');
 
 $routes->get('uploads/(:any)', static function ($filename) {
     $path = WRITEPATH . 'uploads/' . $filename;

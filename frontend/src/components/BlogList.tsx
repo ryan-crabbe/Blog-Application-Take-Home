@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { fetchBlogs, type BlogPost } from "../services/blogService";
 import { format } from "date-fns";
 import { Badge } from "@/components/ui/badge";
+import { Link } from "react-router-dom";
 
 export function BlogList() {
   const [blogs, setBlogs] = useState<BlogPost[]>([]);
@@ -49,40 +50,40 @@ export function BlogList() {
 
         <div className="flex flex-col space-y-4">
           {blogs.map((blog) => (
-            <article
-              key={blog.id}
-              className="bg-white rounded-lg overflow-hidden shadow-lg hover:shadow-xl transition-shadow"
-            >
-              <div className="flex p-4">
-                <div className="flex-1 pr-4">
-                  <h2 className="text-xl font-bold mb-2">{blog.title}</h2>
-                  <p className="text-gray-600 mb-2">{blog.description}</p>
-                  <div className="flex flex-wrap gap-2 mt-4">
-                    <span className="text-sm text-gray-500">
-                      {blog.category}
-                    </span>
-                    {blog.tags?.map((tag, index) => (
-                      <Badge key={index} variant="outline" className="text-sm">
-                        {tag}
-                      </Badge>
-                    ))}
-                    <time className="text-sm text-gray-500 ml-auto">
-                      {format(new Date(blog.created_at), "MMM d, yyyy")}
-                    </time>
+            <Link to={`/blogs/${blog.id}`} key={blog.id}>
+              <article className="bg-white rounded-lg overflow-hidden shadow-lg hover:shadow-xl transition-shadow">
+                <div className="flex p-4">
+                  <div className="flex-1 pr-4">
+                    <h2 className="text-xl font-bold mb-2">{blog.title}</h2>
+                    <p className="text-gray-600 mb-2">{blog.description}</p>
+                    <div className="flex flex-wrap gap-2 mt-4">
+                      {blog.tags?.map((tag, index) => (
+                        <Badge
+                          key={index}
+                          variant="outline"
+                          className="text-sm"
+                        >
+                          {tag}
+                        </Badge>
+                      ))}
+                      <time className="text-sm text-gray-500 ml-auto">
+                        {format(new Date(blog.created_at), "MMM d, yyyy")}
+                      </time>
+                    </div>
                   </div>
-                </div>
 
-                {blog.image && (
-                  <div className="w-[100px] h-[100px]">
-                    <img
-                      src={`http://localhost:8080/uploads/${blog.image}`}
-                      alt={blog.title}
-                      className="w-full h-full object-cover rounded-lg"
-                    />
-                  </div>
-                )}
-              </div>
-            </article>
+                  {blog.image && (
+                    <div className="w-[100px] h-[100px]">
+                      <img
+                        src={`http://localhost:8080/uploads/${blog.image}`}
+                        alt={blog.title}
+                        className="w-full h-full object-cover rounded-lg"
+                      />
+                    </div>
+                  )}
+                </div>
+              </article>
+            </Link>
           ))}
         </div>
 

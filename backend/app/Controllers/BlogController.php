@@ -160,4 +160,37 @@ class BlogController extends ResourceController
             ]);
         }
     }
+    
+    public function show($id = null)
+    {
+        try {
+            if ($id === null) {
+                return $this->response->setStatusCode(400)->setJSON([
+                    'message' => 'Blog ID is required'
+                ]);
+            }
+
+            $blog = $this->blogModel->find($id);
+            
+            if (!$blog) {
+                return $this->response->setStatusCode(404)->setJSON([
+                    'message' => 'Blog post not found'
+                ]);
+            }
+            
+            // Get tags for the blog post
+            $tags = $this->blogModel->getTagsForBlog($blog['id']);
+            $blog['tags'] = array_column($tags, 'name');
+            
+            return $this->response->setJSON([
+                'blog_post' => $blog
+            ]);
+            
+        } catch (\Exception $e) {
+            return $this->response->setStatusCode(500)->setJSON([
+                'message' => 'Error fetching blog post',
+                'error' => ENVIRONMENT === 'development' ? $e->getMessage() : 'Internal server error'
+            ]);
+        }
+    }
 }

@@ -1,5 +1,6 @@
 import { BlogPost, fetchBlogs } from "@/services/blogService";
 import { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 import {
   Card,
   CardHeader,
@@ -40,31 +41,32 @@ export function TopBlogs() {
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {blogs.map((blog) => (
-          <Card key={blog.id} className="hover:shadow-lg transition-shadow">
-            {blog.image && (
-              <div className="w-full h-[200px] relative">
-                <img
-                  src={`http://localhost:8080/uploads/${blog.image}`}
-                  alt={blog.title}
-                  className="w-full h-full object-cover"
-                />
-              </div>
-            )}
-            <CardHeader>
-              <CardTitle>{blog.title}</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-muted-foreground">{blog.description}</p>
-            </CardContent>
-            <CardFooter className="flex flex-wrap gap-2">
-              <Badge variant="secondary">{blog.category}</Badge>
-              {blog.tags?.map((tag, index) => (
-                <Badge key={index} variant="outline">
-                  {tag}
-                </Badge>
-              ))}
-            </CardFooter>
-          </Card>
+          <Link key={blog.id} to={`/blogs/${blog.id}`}>
+            <Card className="hover:shadow-lg transition-shadow h-full">
+              {blog.image && (
+                <div className="w-full h-[200px] relative">
+                  <img
+                    src={`http://localhost:8080/uploads/${blog.image}`}
+                    alt={blog.title}
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+              )}
+              <CardHeader>
+                <CardTitle>{blog.title}</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-muted-foreground">{blog.description}</p>
+              </CardContent>
+              <CardFooter className="flex flex-wrap gap-2">
+                {blog.tags?.map((tag, index) => (
+                  <Badge key={index} variant="outline">
+                    {tag}
+                  </Badge>
+                ))}
+              </CardFooter>
+            </Card>
+          </Link>
         ))}
       </div>
     </div>
