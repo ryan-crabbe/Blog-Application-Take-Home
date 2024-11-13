@@ -16,6 +16,11 @@ export function Header() {
           </Link>
         </Button>
         <Button variant="ghost" className="text-sm text-black" asChild>
+          <Link to="/calendar" className="text-sm text-black">
+            Calendar View
+          </Link>
+        </Button>
+        <Button variant="ghost" className="text-sm text-black" asChild>
           <Link to="/create" className="text-sm text-black">
             Create Blog Post
           </Link>

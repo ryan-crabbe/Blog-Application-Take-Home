@@ -6,6 +6,7 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import Blogs from "./pages/blogs.tsx";
 import CreateBlogPost from "./pages/CreateBlogPost.tsx";
 import BlogPostPage from "./pages/BlogPostPage.tsx";
+import CalendarPage from "./pages/CalendarPage.tsx";
 
 const router = createBrowserRouter([
   {
@@ -23,6 +24,10 @@ const router = createBrowserRouter([
   {
     path: "/blogs/:id",
     element: <BlogPostPage />,
+  },
+  {
+    path: "/calendar",
+    element: <CalendarPage />,
   },
 ]);
 
